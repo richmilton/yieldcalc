@@ -2,18 +2,21 @@ var expect = require('chai').expect;
 var getLatLong = require('../postcode');
 
 describe('getLatLong()', function () {
-  it('should add two numbers', function () {
+  it('should return lat,long', function () {
 
     // 1. ARRANGE
-    var x = 5;
-    var y = 1;
-    var sum1 = x + y;
+    let postcode = 'BS7 8DR';
+
 
     // 2. ACT
-    var sum2 = getLatLong(x, y);
+    let result = getLatLong(postcode);
 
     // 3. ASSERT
-    expect(sum2).to.be.equal(sum1);
+    result.then(r => {
+      expect(r.result.longitude).to.be.equal(-2.598308);
+      expect(r.result.latitude).to.be.equal(51.475366);
+    })
 
   });
 });
+
