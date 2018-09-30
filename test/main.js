@@ -48,7 +48,7 @@ describe('doYield()', function () {
 describe('calculate()', function () {
   it('should return ?', function () {
 
-    let result = main.calculate('BS7 8DR','1.0mi');
+    let result = main.calculate('BS7 8DR','2.0mi');
 
     // 3. ASSERT
     expect(result.price).to.be.equal(770000);

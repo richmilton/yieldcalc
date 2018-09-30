@@ -1,5 +1,5 @@
-const async = require('asyncawait/async');
-const await = require('asyncawait/await');
+//const async = require('asyncawait/async');
+//const await = require('asyncawait/await');
 const request = require('request-promise-native');
 const getLatLong = require('./postcode');
 
@@ -46,7 +46,7 @@ async function calculate(postcode, range) {
   let numBeds = 2,
     buySum,
     rentSum,
-    sort = 'pl',
+    sort = 'ph',
     wkOrMnth = 12,
     sortOpts = {
       re: 'relevancy',
