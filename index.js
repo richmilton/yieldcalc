@@ -1,5 +1,5 @@
 const request = require('request');
-const getlatlong = require('postcode')
+const getlatlong = require('postcode');
 
 let numBeds = 2,
   buySum,

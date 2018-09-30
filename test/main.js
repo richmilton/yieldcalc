@@ -30,3 +30,29 @@ describe('doSummary()', function () {
 
   });
 });
+
+describe('doYield()', function () {
+  it('should return json', function () {
+
+    let priceRes = main.doSummary(priceData);
+    let rentRes = main.doSummary(rentData);
+    let result = main.doYield(priceRes.hi, rentRes.hi, 12);
+
+    // 3. ASSERT
+    expect(result.price).to.be.equal(770000);
+    expect(result.rent).to.be.equal(2300);
+    expect(result.yield).to.be.equal('3.58');
+  });
+});
+
+describe('calculate()', function () {
+  it('should return ?', function () {
+
+    let result = main.calculate('BS7 8DR','1.0mi');
+
+    // 3. ASSERT
+    expect(result.price).to.be.equal(770000);
+    expect(result.rent).to.be.equal(2300);
+    expect(result.yield).to.be.equal('3.58');
+  });
+});
