@@ -704,6 +704,6 @@ const data = {
     "total_results": 98,
     "_cu5t0mP434m_": "remove"
 }
-}
+};
 
-module.exports = data
+module.exports = data;
