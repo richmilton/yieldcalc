@@ -1,8 +1,68 @@
+<!doctype html>
 <html>
 <head>
-
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous">
+    </script>
+    <script>
+        $(function (){
+          let report, prog;
+          $('#go').click(function(){
+            let pc = $('#postcode').val();
+            let rg = $('#range').val();
+            let pt = $('#ptype').val();
+            let hl = $('#hilo').val();
+            let br = $('#beds').val();
+            if (pc) {
+              $('#result-container').html('<br/>report in progress, please wait ...');
+              prog = setInterval(function () {
+                $('#result-container').append('.');
+              }, 1000);
+              $.ajax({url: `/calculate/${pc}/${rg}/${hl}/${br}/${pt}`}).then(function(data){
+                let html = '', sep;
+                report = data;
+                $.each(data, function(k, v) {
+                  html += '<br/><b>' + k.replace(/_/g, ' ') + '</b>';
+                  if (/^properties_for_/.test(k)) {
+                    sep = '<br/>&nbsp;&#8226;&nbsp;';
+                    $.each(v, function (l, w) {
+                      html += sep + '<a target="_blank" href="' + w.lister_url + '">' + w.title + ' ' + w.price_formatted + '</a>';
+                    })
+                  }
+                  else if (/^object$/.test(typeof v)) {
+                    html += JSON.stringify(v);
+                  }
+                  else {
+                    html += ' ' + '</b>: ' + v;
+                  }
+                });
+                $('#result-container').html(html);
+              }).always(function () {
+                clearInterval(prog);
+              })
+            }
+          })
+        })
+    </script>
 </head>
 <body>
-hello
+<div id="form-container">
+    <label>post code</label>
+    <input type="text" name="postcode" id="postcode"/>
+    <label>range</label>
+    <input type="text" name="range" id="range" value="1.0mi"/>
+    <label>house or flat</label>
+    <input type="text" name="ptype" id="ptype" value="flat"/>
+    <label>hi or lo</label>
+    <input type="text" name="hilo" id="hilo" value="ph"/>
+    <label>bedrooms</label>
+    <input type="text" name="beds" id="beds" value="2"/>
+    <input type="submit" id="go" value="go"/>
+</div>
+<div id="result-container">
+
+</div>
 </body>
 </html>

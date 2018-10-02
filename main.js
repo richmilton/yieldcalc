@@ -12,20 +12,22 @@ const doSummary = body => {
     low = fp,
     last = 0,
     pr = 0,
-    l = body.response.listings.length;
+    l = body.response.listings.length,
+    propList =[];
   console.log(body.response.total_pages || 'no results found');
   console.log(l);
   for (let r = 0; r < l; r++) {
     p = body.response.listings[r];
-    pr = parseInt(p.price_high),
-      console.log(`[${p.datasource_name}][${p.lister_name || ''}] ${p.title} ${p.price_formatted}[${p.price_high}]`);
+    pr = parseInt(p.price_high);
+    propList.push(p);
+    //propList.push(`[${p.datasource_name}][${p.lister_name || ''}] ${p.title} ${p.price_formatted}[${p.price_high}]`);
     cum += pr;
     if (pr < last) low = pr;
     if (pr > last) high = pr;
     last = pr
   }
   av = (cum/l || 0)
-  return {hi: high, lo: low, av: av.toFixed(0), num: l};
+  return {hi: high, lo: low, av: av.toFixed(0), num: l, properties: propList};
 };
 
 const toQueryString = ob => {
@@ -42,11 +44,11 @@ const doYield = (p, r, f) => {
   //return `price: ${p}, rent: ${r}, yield: ${(r * f / p * 100).toFixed(2)}`;
 };
 
-async function calculate(postcode, range) {
-  let numBeds = 2,
+async function calculate(postcode, range, hilo, beds, ptype) {
+  let numBeds = beds,
     buySum,
     rentSum,
-    sort = 'ph',
+    sort = hilo,
     wkOrMnth = 12,
     sortOpts = {
       re: 'relevancy',
@@ -69,7 +71,7 @@ async function calculate(postcode, range) {
       number_of_results: '50',
       bedroom_min: numBeds,
       bedroom_max: numBeds,
-      property_type: 'flat',
+      property_type: ptype,
       listing_type: 'buy',
       radius: 5,
       sort: sortOpts[sort]
@@ -98,7 +100,26 @@ async function calculate(postcode, range) {
   buySum = doSummary(pProm);
   rentSum = doSummary(rProm);
 
-  console.log(`${stuff.bedroom_min} bed ${stuff.property_type}s ${postcode}`);
+  return new Promise((resolve, reject) => {
+    resolve({
+      title: `${stuff.bedroom_min} bed ${stuff.property_type}s ${postcode}`,
+      sales_analysed: buySum.num,
+      rents_analysed: rentSum.num,
+      average_sale_price: buySum.av,
+      average_rent_price: rentSum.av,
+      highest_sale_price: buySum.hi,
+      highest_rent_price: rentSum.hi,
+      lowest_sale_price: buySum.lo,
+      lowest_rent_price: rentSum.lo,
+      yield_on_lowest: doYield(buySum.lo, rentSum.lo, wkOrMnth),
+      yield_on_highest: doYield(buySum.hi, rentSum.hi, wkOrMnth),
+      average_yield_estimate: doYield(buySum.av, rentSum.av, wkOrMnth),
+      properties_for_sale: buySum.properties,
+      properties_for_rent: rentSum.properties
+    });
+  });
+
+  /*console.log(`${stuff.bedroom_min} bed ${stuff.property_type}s ${postcode}`);
   console.log('Properties for sale analysed: ' + buySum.num);
   console.log('Properties for rent analysed: ' + rentSum.num);
   console.log('Average price: ' + buySum.av);
@@ -109,10 +130,10 @@ async function calculate(postcode, range) {
   console.log('Lowest rent: ' + rentSum.lo);
   console.log('Yield on lowest: ' + doYield(buySum.lo, rentSum.lo, wkOrMnth));
   console.log('Yield on highest: ' + doYield(buySum.hi, rentSum.hi, wkOrMnth));
-  console.log('Average yield estimate: ' + JSON.stringify(doYield(buySum.av, rentSum.av, wkOrMnth)));
+  console.log('Average yield estimate: ' + JSON.stringify(doYield(buySum.av, rentSum.av, wkOrMnth)));*/
 }
 
-exports.doSummary = doSummary;
-exports.doYield = doYield;
-exports.toQueryString = toQueryString;
-exports.calculate = calculate;
+module.exports.doSummary = doSummary;
+module.exports.doYield = doYield;
+module.exports.toQueryString = toQueryString;
+module.exports.calculate = calculate;
