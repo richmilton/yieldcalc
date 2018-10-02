@@ -1,14 +1,19 @@
 <!doctype html>
 <html>
 <head>
+    <style>
+        body, div {font-family: Arial}
+    </style>
     <script
             src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous">
     </script>
     <script>
+        let report;
+
         $(function (){
-          let report, prog;
+          let prog;
           $('#go').click(function(){
             let pc = $('#postcode').val();
             let rg = $('#range').val();
@@ -32,7 +37,7 @@
                     })
                   }
                   else if (/^object$/.test(typeof v)) {
-                    html += JSON.stringify(v);
+                    html += '<br/>' + JSON.stringify(v);
                   }
                   else {
                     html += ' ' + '</b>: ' + v;
