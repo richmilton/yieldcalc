@@ -28,7 +28,7 @@ const doCalc = (req, res, next) => {
 
 const server = restify.createServer();
 server.get('/calculate/:postcode/:range/:hilo/:beds/:ptype', doCalc);
-server.head('/calculate/:postcode/:range/:hilo/:beds/:ptype', doCalc());
+server.head('/calculate/:postcode/:range/:hilo/:beds/:ptype', respond);
 
 //static html
 server.get('/public/static/*', restify.plugins.serveStatic({

@@ -103,6 +103,7 @@ async function calculate(postcode, range, hilo, beds, ptype) {
   return new Promise((resolve, reject) => {
     resolve({
       title: `${stuff.bedroom_min} bed ${stuff.property_type}s ${postcode}`,
+      latlng: {lat: pcData.result.latitude, lng: pcData.result.longitude},
       sales_analysed: buySum.num,
       rents_analysed: rentSum.num,
       average_sale_price: buySum.av,
@@ -118,19 +119,6 @@ async function calculate(postcode, range, hilo, beds, ptype) {
       properties_for_rent: rentSum.properties
     });
   });
-
-  /*console.log(`${stuff.bedroom_min} bed ${stuff.property_type}s ${postcode}`);
-  console.log('Properties for sale analysed: ' + buySum.num);
-  console.log('Properties for rent analysed: ' + rentSum.num);
-  console.log('Average price: ' + buySum.av);
-  console.log('Average rent: ' + rentSum.av);
-  console.log('Highest price: ' + buySum.hi);
-  console.log('Highest rent: ' + rentSum.hi);
-  console.log('Lowest price: ' + buySum.lo);
-  console.log('Lowest rent: ' + rentSum.lo);
-  console.log('Yield on lowest: ' + doYield(buySum.lo, rentSum.lo, wkOrMnth));
-  console.log('Yield on highest: ' + doYield(buySum.hi, rentSum.hi, wkOrMnth));
-  console.log('Average yield estimate: ' + JSON.stringify(doYield(buySum.av, rentSum.av, wkOrMnth)));*/
 }
 
 module.exports.doSummary = doSummary;
