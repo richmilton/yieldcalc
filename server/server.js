@@ -19,8 +19,8 @@ const doCalc = (req, res, next) => {
       next();
     },
     rej => {
-      res.send('sfa');
-      console.log(rej);
+      res.send(rej);
+      console.log('server', rej);
       next();
     }
   )

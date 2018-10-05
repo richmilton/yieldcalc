@@ -3,13 +3,18 @@
   for UK a post code or partial post code
 */
 
-const async = require('asyncawait/async');
-const await = require('asyncawait/await');
 const request = require('request-promise-native');
 const apiUrlPrefix = 'https://postcodes.io/postcodes/'
 
-async function getLatLong(postCode) {
-  return await request(apiUrlPrefix + postCode, {json: true});
+let getLatLong = (postCode) => {
+  //return request(apiUrlPrefix + postCode, {json: true});
+  return new Promise((resolve, reject) => {
+    request(apiUrlPrefix + postCode, {json: true}).then(data => {
+      resolve(data);
+    }).catch(err => {
+      reject(err.error);
+    });
+  })
 }
 
 module.exports = getLatLong;

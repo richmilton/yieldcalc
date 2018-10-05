@@ -77,11 +77,12 @@ async function calculate(postcode, range, hilo, beds, ptype) {
       sort: sortOpts[sort]
     },
     urlPrefix = 'https://api.nestoria.co.uk/api?',
-    pProm,
-    rProm,
-    pcData, wait = ms => new Promise((r, j)=>setTimeout(r, ms));
+    pcData,
+    err,
+    wait = ms => new Promise((r, j)=>setTimeout(r, ms));
 
   pcData = await getLatLong(postcode);
+
   stuff.centre_point = `${pcData.result.latitude},${pcData.result.longitude},${range}`;
 
   console.log(stuff.centre_point);
@@ -93,14 +94,26 @@ async function calculate(postcode, range, hilo, beds, ptype) {
   console.log(bqs)
   console.log(rqs)
 
-  pProm = await request(bqs, { json: true });
-  rProm = await wait(1000);
-  rProm = await request(rqs, { json: true });
+  return new Promise(async (resolve, reject) => {
+    let pProm,
+      rProm;
 
-  buySum = doSummary(pProm);
-  rentSum = doSummary(rProm);
+    pProm = await request(bqs, { json: true });
 
-  return new Promise((resolve, reject) => {
+    if (pProm.response.listings.length === 0) {
+      reject({status: 500, error: 'no properties found for sale'});
+    }
+
+    rProm = await wait(1000);
+    rProm = await request(rqs, { json: true });
+
+    if (rProm.response.listings.length === 0) {
+      reject({status: 500, error: 'no properties found for rent'});
+    }
+
+    buySum = doSummary(pProm);
+    rentSum = doSummary(rProm);
+
     resolve({
       title: `${stuff.bedroom_min} bed ${stuff.property_type}s ${postcode}`,
       latlng: {lat: pcData.result.latitude, lng: pcData.result.longitude},
@@ -118,6 +131,7 @@ async function calculate(postcode, range, hilo, beds, ptype) {
       properties_for_sale: buySum.properties,
       properties_for_rent: rentSum.properties
     });
+
   });
 }
 

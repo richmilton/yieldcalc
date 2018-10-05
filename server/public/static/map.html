@@ -100,7 +100,7 @@
                   return function() {
                     infowindow.setContent('For ' + saleOrRent + ': ' + w.price_formatted + '<br/>' +
                       '<a target="_blank" href="' + w.lister_url + '">' + w.title + '</a><br/><img src="' +
-                      w.thumb_url + '">');
+                      w.img_url + '"><p>' + w.summary + '</p>');
                     infowindow.open(map, marker);
                   }
                 })(marker, l));
@@ -117,6 +117,8 @@
             }
           });
           $('#result-container').html(html);
+        }).catch(function(e) {
+          $('#result-container').html(e);
         }).always(function () {
           clearInterval(prog);
         })
