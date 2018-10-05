@@ -19,6 +19,13 @@
             //margin: 0;
             //padding: 0;
         }
+        .iw-img {
+            width: 150px;
+            float: left;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .iw {max-width: 250px}
     </style>
 </head>
 <body>
@@ -99,8 +106,8 @@
                 google.maps.event.addListener(marker, 'click', (function(marker, l) {
                   return function() {
                     infowindow.setContent('For ' + saleOrRent + ': ' + w.price_formatted + '<br/>' +
-                      '<a target="_blank" href="' + w.lister_url + '">' + w.title + '</a><br/><img src="' +
-                      w.img_url + '"><p>' + w.summary + '</p>');
+                      '<div class="iw"><a target="_blank" href="' + w.lister_url + '">' + w.title + '</a><br/><img class="iw-img" src="' +
+                      w.img_url + '"><p>' + w.summary + '</p></div>');
                     infowindow.open(map, marker);
                   }
                 })(marker, l));
